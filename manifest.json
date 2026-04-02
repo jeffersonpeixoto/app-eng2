@@ -1,23 +1,9 @@
 {
-  "name": "Chamados de Engenharia V3",
-  "short_name": "Chamados ENG",
-  "start_url": "./index.html",
+  "name": "Chamados de Engenharia Premium",
+  "short_name": "Chamados",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#f8fafc",
+  "background_color": "#0f172a",
   "theme_color": "#0f172a",
-  "description": "PWA para abertura e gestão local de chamados de engenharia com controle de datas e horários.",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "icons": []
 }
