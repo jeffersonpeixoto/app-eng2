@@ -1,9 +1,20 @@
-CONFIGURAÇÃO DO SUPABASE
+VERSÃO SIMPLES
 
+Esta versão faz apenas:
+- abrir chamado
+- listar chamados
+
+CONFIGURAÇÃO
 1. Abra o arquivo supabase.js
 2. Preencha:
    const SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
    const SUPABASE_KEY = "SUA_ANON_KEY";
+
+3. Rode:
+   python -m http.server 8000
+
+4. Abra:
+   http://localhost:8000
 
 SQL DA TABELA
 
@@ -18,9 +29,7 @@ create table if not exists chamados (
   descricao text,
   foto_url text,
   status text,
-  data_criacao timestamptz,
-  data_inicio timestamptz,
-  data_finalizacao timestamptz
+  data_criacao timestamptz
 );
 
 alter table chamados enable row level security;
@@ -30,13 +39,3 @@ on chamados for insert to anon with check (true);
 
 create policy "public select"
 on chamados for select to anon using (true);
-
-create policy "public update"
-on chamados for update to anon using (true) with check (true);
-
-STORAGE
-- Criar bucket: chamados-fotos
-- Permitir insert/select no bucket para anon, se desejar uso sem login
-
-EXECUÇÃO LOCAL
-python -m http.server 8000
