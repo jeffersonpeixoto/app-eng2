@@ -4,444 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f172a" />
-  <meta name="description" content="Sistema PWA de abertura e acompanhamento local de chamados de engenharia." />
-  <title>Chamados de Engenharia • V3</title>
+  <meta name="description" content="Sistema de chamados de engenharia com PWA, PDF, quadro operacional e detalhes." />
+  <title>Chamados de Engenharia • Completo</title>
   <link rel="manifest" href="manifest.json" />
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-soft: #f1f5f9;
-      --text: #0f172a;
-      --muted: #475569;
-      --primary: #1d4ed8;
-      --primary-strong: #1e40af;
-      --danger: #dc2626;
-      --success: #16a34a;
-      --warning: #d97706;
-      --critical: #b91c1c;
-      --shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
-      --radius: 18px;
-      --radius-sm: 12px;
-      --border: 1px solid #e2e8f0;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
-    body { min-height: 100vh; }
-
-    .app-shell {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-      color: white;
-      padding: 28px 22px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
-
-    .brand {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    .brand-logo {
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #3b82f6, #22c55e);
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      font-size: 22px;
-      box-shadow: 0 10px 22px rgba(59,130,246,.3);
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-
-    .brand span {
-      display: block;
-      color: #cbd5e1;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .nav {
-      display: grid;
-      gap: 10px;
-    }
-
-    .nav button {
-      width: 100%;
-      text-align: left;
-      background: rgba(255,255,255,.08);
-      color: white;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .nav button:hover, .nav button.active {
-      background: rgba(59,130,246,.25);
-      border-color: rgba(96,165,250,.35);
-      transform: translateY(-1px);
-    }
-
-    .content {
-      padding: 28px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .topbar h2 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .topbar p {
-      margin: 6px 0 0;
-      color: var(--muted);
-    }
-
-    .install-btn {
-      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-      color: white;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      display: none;
-    }
-
-    .grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: var(--border);
-      padding: 20px;
-    }
-
-    .hero {
-      background: linear-gradient(135deg, #eff6ff, #f8fafc);
-      border: var(--border);
-    }
-
-    .sector-card {
-      padding: 20px;
-      border-radius: 18px;
-      border: var(--border);
-      background: var(--surface);
-      cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .sector-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
-    }
-
-    .sector-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin: 10px 0 6px;
-    }
-
-    .sector-desc {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .metric {
-      display: grid;
-      gap: 8px;
-    }
-
-    .metric-value {
-      font-size: 28px;
-      font-weight: 800;
-    }
-
-    .metric-label {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    form {
-      display: grid;
-      gap: 16px;
-    }
-
-    .field-group {
-      display: grid;
-      gap: 8px;
-    }
-
-    label {
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      border: 1px solid #cbd5e1;
-      border-radius: 14px;
-      padding: 13px 14px;
-      font-size: 15px;
-      background: white;
-      outline: none;
-      transition: .2s ease;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 4px rgba(96,165,250,.15);
-    }
-
-    textarea { min-height: 120px; resize: vertical; }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 14px;
-      padding: 13px 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-      color: white;
-    }
-
-    .btn-secondary {
-      background: var(--surface-soft);
-      color: var(--text);
-      border: var(--border);
-    }
-
-    .btn-danger {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .btn:hover { transform: translateY(-1px); }
-
-    .toolbar {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .toolbar > * { flex: 1 1 180px; }
-
-    .ticket-list {
-      display: grid;
-      gap: 14px;
-    }
-
-    .ticket-card {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 16px;
-      align-items: start;
-      background: var(--surface);
-      border: var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .ticket-card h4 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-
-    .ticket-meta {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .timeline {
-      display: grid;
-      gap: 6px;
-      margin: 12px 0;
-    }
-
-    .timeline-line {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 13px;
-      align-items: center;
-    }
-
-    .timeline-line strong {
-      color: var(--text);
-      min-width: 145px;
-      display: inline-block;
-    }
-
-    .ticket-desc {
-      color: var(--muted);
-      margin: 0;
-      line-height: 1.45;
-    }
-
-    .badge {
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .status-aberto { background: #dbeafe; color: #1d4ed8; }
-    .status-andamento { background: #fef3c7; color: #b45309; }
-    .status-concluido { background: #dcfce7; color: #15803d; }
-
-    .priority-baixa { background: #e2e8f0; color: #334155; }
-    .priority-media { background: #fef3c7; color: #92400e; }
-    .priority-alta { background: #fee2e2; color: #b91c1c; }
-    .priority-critica { background: #fecaca; color: #7f1d1d; }
-
-    .thumb {
-      width: 120px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 14px;
-      border: var(--border);
-      margin-top: 8px;
-      display: block;
-    }
-
-    .hidden { display: none !important; }
-
-    dialog {
-      border: none;
-      border-radius: 20px;
-      width: min(860px, 94vw);
-      padding: 0;
-      box-shadow: 0 30px 80px rgba(0,0,0,.25);
-    }
-
-    dialog::backdrop { background: rgba(15,23,42,.55); }
-
-    .modal-header, .modal-body, .modal-footer {
-      padding: 20px 22px;
-    }
-
-    .modal-header {
-      border-bottom: var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .modal-footer {
-      border-top: var(--border);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .detail-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .detail-item {
-      background: var(--surface-soft);
-      border-radius: 14px;
-      padding: 14px;
-      border: var(--border);
-    }
-
-    .detail-label {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: .03em;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 36px 20px;
-      color: var(--muted);
-      background: var(--surface);
-      border-radius: var(--radius);
-      border: 2px dashed #cbd5e1;
-    }
-
-    .notice {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e3a8a;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 980px) {
-      .app-shell { grid-template-columns: 1fr; }
-      .sidebar { height: auto; position: static; }
-      .grid-3, .grid-2, .detail-grid { grid-template-columns: 1fr; }
-      .ticket-card { grid-template-columns: 1fr; }
-      .content { padding: 18px; }
-      .timeline-line strong { min-width: auto; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="supabase.js"></script>
+  <script defer src="app.js"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -450,187 +19,166 @@
         <div class="brand-logo">CE</div>
         <div>
           <h1>Chamados de Engenharia</h1>
-          <span>PWA offline • Versão 2</span>
+          <span>PWA completo • Supabase</span>
         </div>
       </div>
 
       <nav class="nav">
-        <button class="active" data-view-btn="dashboard">Dashboard</button>
-        <button data-view-btn="novo">Novo Chamado</button>
-        <button data-view-btn="lista">Lista de Chamados</button>
+        <button class="nav-btn active" data-view-btn="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view-btn="novo">Novo Chamado</button>
+        <button class="nav-btn" data-view-btn="lista">Lista de Chamados</button>
+        <button class="nav-btn" data-view-btn="kanban">Quadro Operacional</button>
       </nav>
+
+      <div class="sidebar-card">
+        <strong>Recursos restaurados</strong>
+        <p>Esta versão mantém o botão de instalar o app, exportação em PDF, quadro operacional e tela de detalhes.</p>
+        <span class="dot online">PWA ativo</span>
+      </div>
     </aside>
 
     <main class="content">
-      <div class="topbar">
-        <div>
-          <h2>Gestão de Chamados</h2>
-          <p>Controle local dos chamados com data e hora de criação, data e hora de início e data de finalização.</p>
+      <header class="topbar">
+             <div class="topbar-actions">
+          <button id="installButton" class="btn btn-secondary hidden" type="button">Instalar aplicativo</button>
+          <button class="btn btn-primary" onclick="carregarDados()">Atualizar dados</button>
         </div>
-        <button id="installButton" class="install-btn">Instalar aplicativo</button>
-      </div>
+      </header>
 
-      <section id="dashboardView" class="grid">
-        <div class="card hero">
-          <h3 style="margin-top:0">Selecione o setor para abrir um chamado</h3>
-          <p style="color:var(--muted); margin-bottom:0">A aplicação funciona offline, salva os dados no navegador e pode ser instalada como PWA.</p>
-        </div>
+      <section id="dashboardView" class="view">
+  
 
-        <div class="grid grid-3">
-          <div class="sector-card" onclick="selecionarSetor('Predial')">
-            <div class="badge status-aberto">Predial</div>
-            <div class="sector-title">Manutenção Predial</div>
-            <div class="sector-desc">Chamados para estrutura, cobertura, alvenaria, banheiros, salas e áreas comuns.</div>
-          </div>
-          <div class="sector-card" onclick="selecionarSetor('Elétrica')">
-            <div class="badge status-andamento">Elétrica</div>
-            <div class="sector-title">Manutenção Elétrica</div>
-            <div class="sector-desc">Ocorrências de tomadas, iluminação, quadro de energia, geradores e rede elétrica.</div>
-          </div>
-          <div class="sector-card" onclick="selecionarSetor('Metalúrgica')">
-            <div class="badge status-concluido">Metalúrgica</div>
-            <div class="sector-title">Manutenção Metalúrgica</div>
-            <div class="sector-desc">Chamados para estruturas metálicas, portões, corrimãos, soldagens e suportes.</div>
-          </div>
-        </div>
-
-        <div class="grid grid-3">
-          <div class="card metric">
-            <div class="metric-value" id="metricTotal">0</div>
-            <div class="metric-label">Total de chamados</div>
-          </div>
-          <div class="card metric">
-            <div class="metric-value" id="metricAbertos">0</div>
-            <div class="metric-label">Chamados abertos</div>
-          </div>
-          <div class="card metric">
-            <div class="metric-value" id="metricAndamento">0</div>
-            <div class="metric-label">Em andamento</div>
-          </div>
-        </div>
-
-        <div class="grid grid-2">
-          <div class="card metric">
-            <div class="metric-value" id="metricConcluidos">0</div>
-            <div class="metric-label">Concluídos</div>
-          </div>
-          <div class="card metric">
-            <div class="metric-value" id="metricCriticos">0</div>
-            <div class="metric-label">Prioridade crítica</div>
-          </div>
+        <div class="metrics-grid">
+          <article class="metric-card"><span class="metric-label">Total</span><strong class="metric-value" id="metricTotal">0</strong></article>
+          <article class="metric-card"><span class="metric-label">Abertos</span><strong class="metric-value" id="metricAbertos">0</strong></article>
+          <article class="metric-card"><span class="metric-label">Em andamento</span><strong class="metric-value" id="metricAndamento">0</strong></article>
+          <article class="metric-card"><span class="metric-label">Concluídos</span><strong class="metric-value" id="metricConcluidos">0</strong></article>
+          <article class="metric-card danger"><span class="metric-label">Críticos</span><strong class="metric-value" id="metricCriticos">0</strong></article>
         </div>
       </section>
 
-      <section id="novoView" class="hidden">
-        <div class="card">
-          <h3 style="margin-top:0">Novo chamado</h3>
-          <p style="color:var(--muted)">Preencha os dados abaixo. A data e hora de criação serão registradas automaticamente ao salvar.</p>
-
-          <form id="ticketForm">
-            <div class="grid grid-2">
-              <div class="field-group">
-                <label for="setorPrincipal">Setor principal</label>
-                <select id="setorPrincipal" required>
-                  <option value="">Selecione</option>
-                  <option>Predial</option>
-                  <option>Elétrica</option>
-                  <option>Metalúrgica</option>
-                </select>
-              </div>
-
-              <div class="field-group">
-                <label for="unidade">Identificação da Unidade</label>
-                <input id="unidade" required placeholder="Ex.: Unidade 01 / Bloco A" />
-              </div>
+      <section id="novoView" class="view hidden">
+        <div class="card form-card">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Cadastro</span>
+              <h3>Novo chamado</h3>
+              <p class="muted">Cadastre a ocorrência com unidade padronizada, setor, prioridade e foto.</p>
             </div>
+          </div>
 
-            <div class="grid grid-2">
+          <form id="ticketForm" class="form-grid">
+            <div class="grid-2">
               <div class="field-group">
-                <label for="setorProblema">Setor do Problema</label>
-                <select id="setorProblema" required>
-                  <option value="">Selecione o setor principal primeiro</option>
-                </select>
+                <label for="nome">Nome do solicitante</label>
+                <input id="nome" required placeholder="Ex.: João Silva" />
               </div>
-
               <div class="field-group">
-                <label for="tipoManutencao">Tipo de Manutenção</label>
-                <select id="tipoManutencao" required>
+                <label for="unidade">Identificação da unidade</label>
+                <select id="unidade" required>
                   <option value="">Selecione</option>
-                  <option>Corretiva</option>
-                  <option>Preventiva</option>
-                  <option>Emergencial</option>
-                  <option>Inspeção</option>
-                  <option>Instalação</option>
+                  <option>LOJA 9</option><option>LOJA 10</option><option>LOJA 11</option><option>LOJA 12</option>
+                  <option>LOJA 13</option><option>LOJA 16</option><option>LOJA 17</option><option>LOJA 18</option>
+                  <option>CD SECOS</option><option>CD FRIOS</option><option>CENTRO ADM</option>
                 </select>
               </div>
             </div>
 
-            <div class="grid grid-2">
+            <div class="grid-2">
               <div class="field-group">
-                <label for="gravidade">Gravidade da Situação (Priorização)</label>
+                <label for="setor">Setor</label>
+                <select id="setor" required>
+                  <option value="">Selecione</option>
+                  <option>Predial</option><option>Elétrica</option><option>Metalúrgica</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="gravidade">Gravidade</label>
                 <select id="gravidade" required>
                   <option value="">Selecione</option>
-                  <option>Baixa</option>
-                  <option>Média</option>
-                  <option>Alta</option>
-                  <option>Crítica</option>
+                  <option>Baixa</option><option>Média</option><option>Alta</option><option>Crítica</option>
                 </select>
               </div>
+            </div>
 
+            <div class="grid-2">
               <div class="field-group">
-                <label for="foto">Foto</label>
-                <input id="foto" type="file" accept="image/*" capture="environment" />
+                <label for="setorProblema">Setor do problema</label>
+                <input id="setorProblema" required placeholder="Ex.: Banheiro, Quadro de energia, Soldagem" />
+              </div>
+              <div class="field-group">
+                <label for="tipoManutencao">Tipo de manutenção</label>
+                <select id="tipoManutencao" required>
+                  <option value="">Selecione</option>
+                  <option>Corretiva</option><option>Preventiva</option><option>Emergencial</option><option>Inspeção</option><option>Instalação</option>
+                </select>
               </div>
             </div>
 
             <div class="field-group">
-              <label for="descricao">Descrição Detalhada</label>
-              <textarea id="descricao" required placeholder="Descreva o problema encontrado, impacto e observações relevantes."></textarea>
+              <label for="descricao">Descrição detalhada</label>
+              <textarea id="descricao" required placeholder="Descreva o problema, impacto, risco e observações relevantes."></textarea>
             </div>
 
-            <div class="notice">
-              O chamado será criado com status <strong>Aberto</strong>. Quando ele for alterado para <strong>Em andamento</strong>, o sistema gravará a data e hora do início. Ao marcar como <strong>Concluído</strong>, o sistema registrará a data da finalização.
+            <div class="field-group">
+              <label for="foto">Foto</label>
+              <input id="foto" type="file" accept="image/*" capture="environment" />
             </div>
 
             <div class="actions">
               <button type="submit" class="btn btn-primary">Salvar chamado</button>
-              <button type="button" class="btn btn-secondary" onclick="switchView('dashboard'); resetarFormulario();">Cancelar</button>
+              <button type="button" class="btn btn-secondary" onclick="resetarFormulario(); switchView('dashboard')">Cancelar</button>
             </div>
           </form>
         </div>
       </section>
 
-      <section id="listaView" class="hidden">
+      <section id="listaView" class="view hidden">
         <div class="card">
-          <h3 style="margin-top:0">Lista de chamados</h3>
-
-          <div class="toolbar">
-            <input id="busca" placeholder="Buscar por unidade, setor ou descrição" />
-            <select id="filtroStatus">
-              <option value="">Todos os status</option>
-              <option>Aberto</option>
-              <option>Em andamento</option>
-              <option>Concluído</option>
-            </select>
-            <select id="filtroGravidade">
-              <option value="">Todas as prioridades</option>
-              <option>Baixa</option>
-              <option>Média</option>
-              <option>Alta</option>
-              <option>Crítica</option>
-            </select>
-            <select id="filtroSetor">
-              <option value="">Todos os setores</option>
-              <option>Predial</option>
-              <option>Elétrica</option>
-              <option>Metalúrgica</option>
-            </select>
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Operação</span>
+              <h3>Lista de chamados</h3>
+              <p class="muted">Acompanhe chamados, filtros, exportação em PDF e detalhes.</p>
+            </div>
+            <button class="btn btn-secondary" onclick="exportarListaPDF()">Exportar lista de chamados em PDF</button>
           </div>
 
-          <div class="actions" style="margin-bottom:16px; justify-content:flex-end;">
-            <button class="btn btn-primary" style="flex:0 0 auto;" onclick="exportarListaPDF()">Exportar lista de chamados em PDF</button>
+          <div class="toolbar toolbar-4">
+            <input id="busca" placeholder="Buscar por nome, unidade, setor, problema ou ID" />
+            <select id="filtroStatus"><option value="">Todos os status</option><option>Aberto</option><option>Em andamento</option><option>Concluído</option></select>
+            <select id="filtroGravidade"><option value="">Todas as prioridades</option><option>Baixa</option><option>Média</option><option>Alta</option><option>Crítica</option></select>
+            <select id="filtroSetor"><option value="">Todos os setores</option><option>Predial</option><option>Elétrica</option><option>Metalúrgica</option></select>
           </div>
+
           <div id="ticketList" class="ticket-list"></div>
+        </div>
+      </section>
+
+      <section id="kanbanView" class="view hidden">
+        <div class="card">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Quadro operacional</span>
+              <h3>Status por coluna</h3>
+              <p class="muted">Visualização rápida da operação para acompanhamento diário.</p>
+            </div>
+          </div>
+
+          <div class="kanban-grid">
+            <div class="kanban-column">
+              <div class="kanban-header"><span>Aberto</span><strong id="kanbanCountAberto">0</strong></div>
+              <div id="kanbanAberto" class="kanban-list"></div>
+            </div>
+            <div class="kanban-column">
+              <div class="kanban-header"><span>Em andamento</span><strong id="kanbanCountAndamento">0</strong></div>
+              <div id="kanbanAndamento" class="kanban-list"></div>
+            </div>
+            <div class="kanban-column">
+              <div class="kanban-header"><span>Concluído</span><strong id="kanbanCountConcluido">0</strong></div>
+              <div id="kanbanConcluido" class="kanban-list"></div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -639,8 +187,8 @@
   <dialog id="detailModal">
     <div class="modal-header">
       <div>
-        <h3 style="margin:0">Detalhes do chamado</h3>
-        <p id="modalTicketId" style="margin:6px 0 0; color:var(--muted)"></p>
+        <h3>Detalhes do chamado</h3>
+        <p id="modalTicketId"></p>
       </div>
       <button class="btn btn-secondary" onclick="fecharModal()">Fechar</button>
     </div>
@@ -648,478 +196,26 @@
     <div class="modal-body">
       <div id="detailGrid" class="detail-grid"></div>
 
-      <div class="field-group" style="margin-bottom:16px;">
-        <label for="modalDescricao">Descrição detalhada</label>
-        <div id="modalDescricao" class="detail-item" style="white-space:pre-wrap;"></div>
-      </div>
-
-      <img id="modalFoto" class="hidden" style="width:100%; max-height:360px; object-fit:cover; border-radius:18px; border:var(--border);" alt="Foto do chamado">
-    </div>
-
-    <div class="modal-footer">
-      <div class="actions">
+      <div class="field-group">
+        <label for="modalStatusSelect">Status</label>
         <select id="modalStatusSelect">
           <option>Aberto</option>
           <option>Em andamento</option>
           <option>Concluído</option>
         </select>
-        <button class="btn btn-primary" onclick="atualizarStatusModal()">Atualizar status</button>
       </div>
 
-      <button class="btn btn-danger" onclick="excluirChamadoModal()">Excluir chamado</button>
+      <div class="field-group">
+        <label>Descrição</label>
+        <div id="modalDescricao" class="detail-box detail-description"></div>
+      </div>
+
+      <img id="modalFoto" class="modal-image hidden" alt="Foto do chamado" />
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="atualizarChamadoModal()">Salvar atualização</button>
     </div>
   </dialog>
-
-  <script>
-    const STORAGE_KEY = "chamados_engenharia_pwa_v3";
-    const LEGACY_KEYS = ["chamados_engenharia_pwa_v2", "chamados_engenharia_pwa_v1"];
-    let selectedTicketId = null;
-    let deferredPrompt = null;
-    let filteredTicketsCache = [];
-
-    const setorProblemaMap = {
-      "Predial": ["Banheiro", "Sala Administrativa", "Cobertura", "Corredor", "Almoxarifado"],
-      "Elétrica": ["Tomadas", "Iluminação", "Quadro de Energia", "Gerador", "Rede Elétrica"],
-      "Metalúrgica": ["Soldagem", "Portão", "Corrimão", "Estrutura Metálica", "Suporte Metálico"]
-    };
-
-    function migrateLegacyData() {
-      if (localStorage.getItem(STORAGE_KEY)) return;
-
-      for (const key of LEGACY_KEYS) {
-        const raw = localStorage.getItem(key);
-        if (!raw) continue;
-
-        try {
-          const parsed = JSON.parse(raw);
-          const migrated = Array.isArray(parsed) ? parsed.map(item => ({
-            ...item,
-            criadoEm: item.criadoEm || new Date().toISOString(),
-            iniciadoEm: item.iniciadoEm || (item.status === "Em andamento" || item.status === "Concluído" ? item.criadoEm || new Date().toISOString() : ""),
-            finalizadoEm: normalizeLegacyDateTime(item.finalizadoEm, item.criadoEm, item.status)
-          })) : [];
-
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
-          break;
-        } catch (error) {
-          console.error("Falha ao migrar dados legados:", error);
-        }
-      }
-    }
-
-    function getTickets() {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    }
-
-    function saveTickets(tickets) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets));
-    }
-
-    function uid() {
-      return "CH-" + Date.now();
-    }
-
-    function formatDateTime(dateIso) {
-      if (!dateIso) return "—";
-      return new Date(dateIso).toLocaleString("pt-BR");
-    }
-
-    function formatDateOnly(dateIso) {
-      if (!dateIso) return "—";
-      const date = new Date(dateIso);
-      if (Number.isNaN(date.getTime())) return dateIso;
-      return date.toLocaleDateString("pt-BR");
-    }
-
-    function toDateOnly(dateIso) {
-      if (!dateIso) return "";
-      const date = new Date(dateIso);
-      if (Number.isNaN(date.getTime())) return "";
-      return date.toISOString().split("T")[0];
-    }
-
-
-    function normalizeLegacyDateTime(value, fallbackIso, status) {
-      if (!value) {
-        return status === "Concluído" ? (fallbackIso || new Date().toISOString()) : "";
-      }
-      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-        return `${value}T00:00:00`;
-      }
-      const date = new Date(value);
-      return Number.isNaN(date.getTime()) ? (fallbackIso || "") : date.toISOString();
-    }
-
-    function badgeStatusClass(status) {
-      if (status === "Em andamento") return "status-andamento";
-      if (status === "Concluído") return "status-concluido";
-      return "status-aberto";
-    }
-
-    function badgePriorityClass(priority) {
-      return {
-        "Baixa": "priority-baixa",
-        "Média": "priority-media",
-        "Alta": "priority-alta",
-        "Crítica": "priority-critica"
-      }[priority] || "priority-baixa";
-    }
-
-    function switchView(view) {
-      const views = {
-        dashboard: document.getElementById("dashboardView"),
-        novo: document.getElementById("novoView"),
-        lista: document.getElementById("listaView")
-      };
-
-      Object.entries(views).forEach(([key, el]) => {
-        el.classList.toggle("hidden", key !== view);
-      });
-
-      document.querySelectorAll("[data-view-btn]").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.viewBtn === view);
-      });
-
-      if (view === "lista") renderTicketList();
-      if (view === "dashboard") renderMetrics();
-    }
-
-    document.querySelectorAll("[data-view-btn]").forEach(btn => {
-      btn.addEventListener("click", () => switchView(btn.dataset.viewBtn));
-    });
-
-    function selecionarSetor(setor) {
-      switchView("novo");
-      document.getElementById("setorPrincipal").value = setor;
-      popularSetorProblema(setor);
-    }
-
-    function popularSetorProblema(setor) {
-      const select = document.getElementById("setorProblema");
-      select.innerHTML = '<option value="">Selecione</option>';
-
-      (setorProblemaMap[setor] || []).forEach(item => {
-        const option = document.createElement("option");
-        option.value = item;
-        option.textContent = item;
-        select.appendChild(option);
-      });
-    }
-
-    document.getElementById("setorPrincipal").addEventListener("change", (e) => {
-      popularSetorProblema(e.target.value);
-    });
-
-    function resetarFormulario() {
-      document.getElementById("ticketForm").reset();
-      document.getElementById("setorProblema").innerHTML = '<option value="">Selecione o setor principal primeiro</option>';
-    }
-
-    document.getElementById("ticketForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      const fotoInput = document.getElementById("foto");
-      let fotoBase64 = "";
-
-      if (fotoInput.files[0]) {
-        fotoBase64 = await fileToBase64(fotoInput.files[0]);
-      }
-
-      const criadoEm = new Date().toISOString();
-
-      const ticket = {
-        id: uid(),
-        setorPrincipal: document.getElementById("setorPrincipal").value,
-        unidade: document.getElementById("unidade").value.trim(),
-        setorProblema: document.getElementById("setorProblema").value,
-        tipoManutencao: document.getElementById("tipoManutencao").value,
-        gravidade: document.getElementById("gravidade").value,
-        status: "Aberto",
-        descricao: document.getElementById("descricao").value.trim(),
-        foto: fotoBase64,
-        criadoEm,
-        iniciadoEm: "",
-        finalizadoEm: ""
-      };
-
-      const tickets = getTickets();
-      tickets.unshift(ticket);
-      saveTickets(tickets);
-
-      resetarFormulario();
-      renderMetrics();
-      switchView("lista");
-      alert("Chamado salvo com sucesso.");
-    });
-
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function renderMetrics() {
-      const tickets = getTickets();
-      document.getElementById("metricTotal").textContent = tickets.length;
-      document.getElementById("metricAbertos").textContent = tickets.filter(t => t.status === "Aberto").length;
-      document.getElementById("metricAndamento").textContent = tickets.filter(t => t.status === "Em andamento").length;
-      document.getElementById("metricConcluidos").textContent = tickets.filter(t => t.status === "Concluído").length;
-      document.getElementById("metricCriticos").textContent = tickets.filter(t => t.gravidade === "Crítica").length;
-    }
-
-    function getFilteredTickets() {
-      const tickets = getTickets();
-      const busca = document.getElementById("busca").value.toLowerCase().trim();
-      const filtroStatus = document.getElementById("filtroStatus").value;
-      const filtroGravidade = document.getElementById("filtroGravidade").value;
-      const filtroSetor = document.getElementById("filtroSetor").value;
-
-      return tickets.filter(ticket => {
-        const target = [ticket.unidade, ticket.setorPrincipal, ticket.setorProblema, ticket.descricao, ticket.id].join(" ").toLowerCase();
-        return (!busca || target.includes(busca))
-          && (!filtroStatus || ticket.status === filtroStatus)
-          && (!filtroGravidade || ticket.gravidade === filtroGravidade)
-          && (!filtroSetor || ticket.setorPrincipal === filtroSetor);
-      });
-    }
-
-    function renderTicketList() {
-      const list = document.getElementById("ticketList");
-      const filtered = getFilteredTickets();
-      filteredTicketsCache = filtered;
-
-      if (!filtered.length) {
-        list.innerHTML = '<div class="empty-state">Nenhum chamado encontrado com os filtros atuais.</div>';
-        return;
-      }
-
-      list.innerHTML = filtered.map(ticket => `
-        <article class="ticket-card">
-          <div>
-            <h4>${ticket.unidade} • ${ticket.setorPrincipal}</h4>
-            <div class="ticket-meta">
-              <span>${ticket.id}</span>
-              <span>${ticket.setorProblema}</span>
-              <span>${ticket.tipoManutencao}</span>
-            </div>
-
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-              <span class="badge ${badgeStatusClass(ticket.status)}">${ticket.status}</span>
-              <span class="badge ${badgePriorityClass(ticket.gravidade)}">${ticket.gravidade}</span>
-            </div>
-
-            <div class="timeline">
-              <div class="timeline-line"><strong>Criação:</strong> <span>${formatDateTime(ticket.criadoEm)}</span></div>
-              <div class="timeline-line"><strong>Início:</strong> <span>${formatDateTime(ticket.iniciadoEm)}</span></div>
-              <div class="timeline-line"><strong>Finalização:</strong> <span>${formatDateTime(ticket.finalizadoEm)}</span></div>
-            </div>
-
-            <p class="ticket-desc">${ticket.descricao}</p>
-            ${ticket.foto ? `<img class="thumb" src="${ticket.foto}" alt="Foto do chamado">` : ""}
-          </div>
-          <div class="actions">
-            <button class="btn btn-secondary" onclick="abrirDetalhes('${ticket.id}')">Detalhes</button>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    ["busca", "filtroStatus", "filtroGravidade", "filtroSetor"].forEach(id => {
-      document.getElementById(id).addEventListener("input", renderTicketList);
-      document.getElementById(id).addEventListener("change", renderTicketList);
-    });
-
-
-    function exportarListaPDF() {
-      const tickets = getFilteredTickets();
-      if (!tickets.length) {
-        alert("Não há chamados para exportar com os filtros atuais.");
-        return;
-      }
-
-      const rows = tickets.map(ticket => `
-        <tr>
-          <td>${ticket.id}</td>
-          <td>${ticket.unidade}</td>
-          <td>${ticket.setorPrincipal}</td>
-          <td>${ticket.setorProblema}</td>
-          <td>${ticket.tipoManutencao}</td>
-          <td>${ticket.gravidade}</td>
-          <td>${ticket.status}</td>
-          <td>${formatDateTime(ticket.criadoEm)}</td>
-          <td>${formatDateTime(ticket.iniciadoEm)}</td>
-          <td>${formatDateTime(ticket.finalizadoEm)}</td>
-        </tr>
-      `).join("");
-
-      const popup = window.open("", "_blank");
-      if (!popup) {
-        alert("O navegador bloqueou a janela de exportação. Libere pop-ups para continuar.");
-        return;
-      }
-
-      popup.document.write(`
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8" />
-          <title>Lista de Chamados</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 24px; color: #0f172a; }
-            h1 { margin: 0 0 6px; font-size: 22px; }
-            p { margin: 0 0 16px; color: #475569; }
-            table { width: 100%; border-collapse: collapse; font-size: 12px; }
-            th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; vertical-align: top; }
-            th { background: #e2e8f0; }
-            .footer { margin-top: 12px; font-size: 11px; color: #475569; }
-            @page { size: A4 landscape; margin: 12mm; }
-          </style>
-        </head>
-        <body>
-          <h1>Lista de Chamados de Engenharia</h1>
-          <p>Exportado em ${new Date().toLocaleString("pt-BR")}</p>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Unidade</th>
-                <th>Setor</th>
-                <th>Problema</th>
-                <th>Manutenção</th>
-                <th>Prioridade</th>
-                <th>Status</th>
-                <th>Criação</th>
-                <th>Início</th>
-                <th>Finalização</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-          <div class="footer">Use a opção "Salvar como PDF" na janela de impressão.</div>
-          <script>
-            window.onload = function() {
-              window.print();
-            };
-          <\/script>
-        </body>
-        </html>
-      `);
-      popup.document.close();
-    }
-
-    function abrirDetalhes(id) {
-      const ticket = getTickets().find(t => t.id === id);
-      if (!ticket) return;
-
-      selectedTicketId = id;
-      document.getElementById("modalTicketId").textContent = ticket.id;
-      document.getElementById("modalDescricao").textContent = ticket.descricao;
-      document.getElementById("modalStatusSelect").value = ticket.status;
-
-      const detailEntries = [
-        ["Setor principal", ticket.setorPrincipal],
-        ["Unidade", ticket.unidade],
-        ["Setor do problema", ticket.setorProblema],
-        ["Tipo de manutenção", ticket.tipoManutencao],
-        ["Prioridade", ticket.gravidade],
-        ["Status", ticket.status],
-        ["Data e hora da criação", formatDateTime(ticket.criadoEm)],
-        ["Data e hora do início", formatDateTime(ticket.iniciadoEm)],
-        ["Data e hora da finalização", formatDateTime(ticket.finalizadoEm)]
-      ];
-
-      document.getElementById("detailGrid").innerHTML = detailEntries.map(([label, value]) => `
-        <div class="detail-item">
-          <div class="detail-label">${label}</div>
-          <div>${value || "—"}</div>
-        </div>
-      `).join("");
-
-      const modalFoto = document.getElementById("modalFoto");
-      if (ticket.foto) {
-        modalFoto.src = ticket.foto;
-        modalFoto.classList.remove("hidden");
-      } else {
-        modalFoto.classList.add("hidden");
-      }
-
-      document.getElementById("detailModal").showModal();
-    }
-
-    function fecharModal() {
-      document.getElementById("detailModal").close();
-    }
-
-    function atualizarStatusModal() {
-      const tickets = getTickets();
-      const index = tickets.findIndex(t => t.id === selectedTicketId);
-      if (index === -1) return;
-
-      const novoStatus = document.getElementById("modalStatusSelect").value;
-      const ticket = tickets[index];
-      const agora = new Date().toISOString();
-
-      ticket.status = novoStatus;
-
-      if (novoStatus === "Em andamento") {
-        ticket.iniciadoEm = ticket.iniciadoEm || agora;
-        ticket.finalizadoEm = "";
-      }
-
-      if (novoStatus === "Concluído") {
-        ticket.iniciadoEm = ticket.iniciadoEm || agora;
-        ticket.finalizadoEm = agora;
-      }
-
-      if (novoStatus === "Aberto") {
-        ticket.iniciadoEm = "";
-        ticket.finalizadoEm = "";
-      }
-
-      tickets[index] = ticket;
-      saveTickets(tickets);
-      fecharModal();
-      renderMetrics();
-      renderTicketList();
-      alert("Status atualizado.");
-    }
-
-    function excluirChamadoModal() {
-      if (!selectedTicketId) return;
-      const tickets = getTickets().filter(t => t.id !== selectedTicketId);
-      saveTickets(tickets);
-      fecharModal();
-      renderMetrics();
-      renderTicketList();
-      alert("Chamado excluído.");
-    }
-
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault();
-      deferredPrompt = event;
-      document.getElementById("installButton").style.display = "inline-flex";
-    });
-
-    document.getElementById("installButton").addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      document.getElementById("installButton").style.display = "none";
-    });
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js");
-      });
-    }
-
-    migrateLegacyData();
-    renderMetrics();
-    switchView("dashboard");
-  </script>
 </body>
 </html>
